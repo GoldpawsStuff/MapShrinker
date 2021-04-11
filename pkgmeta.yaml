@@ -1,8 +1,8 @@
-package-as: YOUR_ADDON
+package-as: MapShrinker
 enable-nolib-creation: no
 
 move-folders:
-    YOUR_ADDON/YOUR_ADDON: YOUR_ADDON
+    MapShrinker/MapShrinker: MapShrinker
 
 manual-changelog:
     filename: CHANGELOG.md
