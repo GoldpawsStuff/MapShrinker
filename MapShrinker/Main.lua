@@ -103,19 +103,6 @@ local IsAddOnLoaded = IsAddOnLoaded
 local UIParent = UIParent
 
 
--- Your default settings.
------------------------------------------------------------
--- Note that anything changed will be saved to disk
--- when you reload the user interface, or exit the game,
--- and those saved changes will override your defaults here.
--- * You should access saved settings by using db[key]
--- * Don't put frame handles or other widget references in here, 
---   just strings, numbers and booleans.
-local db = (function(db) _G[Addon.."_DB"] = db; return db end)({
-
-})
-
-
 -- Utility Functions
 -----------------------------------------------------------
 local Kill = function(object)
@@ -482,13 +469,6 @@ Private.OnEvent = function(self, event, ...)
 	end
 end
 
--- Your chat command handler.
--- @input editBox <table/frame> The editbox the command was entered into. 
--- @input command <string> The name of the slash command type in.
--- @input ... <string(s)> Any additional arguments passed to your command, all as strings.
-Private.OnChatCommand = function(self, editBox, command, ...)
-end
-
 -- Initialization.
 -- This fires when the addon and its settings are loaded.
 Private.OnInit = function(self)
@@ -560,7 +540,7 @@ end
 			return ([[Interface\AddOns\%s\%s.%s]]):format(Addon, name, type or "tga") 
 		end
 	end
-	
+
 	-- Parse chat input arguments 
 	local parse = function(msg)
 		msg = string.gsub(msg, "^%s+", "") -- Remove spaces at the start.
@@ -581,7 +561,10 @@ end
 		local name = string.upper(Addon.."_CHATCOMMAND_"..command) -- Create a unique uppercase name for the command.
 		_G["SLASH_"..name.."1"] = "/"..command -- Register the chat command, keeping it lowercase.
 		SlashCmdList[name] = function(msg, editBox)
-			(Private[callback] or Private.OnChatCommand or callback)(Private, editBox, command, parse(string.lower(msg)))
+			local func = Private[callback] or Private.OnChatCommand or callback
+			if (func) then
+				func(Private, editBox, command, parse(string.lower(msg)))
+			end
 		end 
 	end
 
@@ -627,13 +610,17 @@ end
 				-- addon namespace methods. 
 				self:UnregisterEvent("ADDON_LOADED")
 				-- Call the initialization method.
-				Private:OnInit()
+				if (Private.OnInit) then
+					Private:OnInit()
+				end
 				-- If this was a load-on-demand addon, 
 				-- then we might be logged in already.
 				-- If that is the case, directly run 
 				-- the enabling method.
 				if (IsLoggedIn()) then
-					Private:OnEnable()
+					if (Private.OnEnable) then
+						Private:OnEnable()
+					end
 				else
 					-- If this is a regular always-load addon, 
 					-- we're not yet logged in, and must listen for this.
@@ -650,7 +637,9 @@ end
 			-- should be put in the namespace enable method.
 			self:UnregisterEvent("PLAYER_LOGIN")
 			-- Call the enabling method.
-			Private:OnEnable()
+			if (Private.OnEnable) then
+				Private:OnEnable()
+			end
 			-- Return. We do not wish to forward this 
 			-- to the namespace event handler.
 			return 
@@ -659,6 +648,8 @@ end
 		-- to the addon namespace's event handler. 
 		-- Note that you can always register more ADDON_LOADED
 		-- if you wish to listen for other addons loading.  
-		Private:OnEvent(event, ...) 
+		if (Private.OnEvent) then
+			Private:OnEvent(event, ...) 
+		end
 	end)
 end)((function() return CreateFrame("Frame", nil, WorldFrame) end)())
