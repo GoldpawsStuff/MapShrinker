@@ -1,14 +1,18 @@
 ## Interface: 90005
-## Name: MapShrinker
+## Interface-Retail: 90005
+
 ## Title: MapShrinker
-## Author: Lars Norberg
 ## Notes: Simple addon to shrink down the worldmap when maximized,|nas well as add a few quality of life features.|n|n|cff4488ffPayPal|r|cffffffff:|r |n|cffffffffwww.paypal.me/GoldpawsStuff|r|n|n|cff4488ffPatreon|r|cffffffff:|r |n|cffffffffwww.patreon.com/GoldpawsStuff|r
+## Author: Lars Norberg
 ## Version: 1.0-Release
-## DefaultState: Enabled
-## SavedVariables: MapShrinker_DB
+
 ## X-Category: Interface Enhancements
 ## X-Discord: https://discord.gg/MUSfWXd
 ## X-Website: https://www.patreon.com/goldpawsstuff
+## X-Curse-Project-ID: 469972
 ## X-License: Custom
+
+## DefaultState: Enabled
+## SavedVariables: MapShrinker_DB
 
 Main.lua
