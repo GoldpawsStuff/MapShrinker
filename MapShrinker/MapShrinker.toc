@@ -10,6 +10,7 @@
 ## X-Discord: https://discord.gg/MUSfWXd
 ## X-Website: https://www.patreon.com/goldpawsstuff
 ## X-Curse-Project-ID: 469972
+## X-Wago-ID: Rn6VOWKd
 ## X-License: Custom
 
 ## DefaultState: Enabled
