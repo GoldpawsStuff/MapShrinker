@@ -105,16 +105,6 @@ local UIParent = UIParent
 
 -- Utility Functions
 -----------------------------------------------------------
-local Kill = function(object)
-	if (object.UnregisterAllEvents) then
-		object:UnregisterAllEvents()
-		object:SetParent(Private.UIHider)
-	else
-		object.Show = object.Hide
-	end
-	object:Hide()
-end
-
 local StripCache = {}
 local Strip = function(object)
 	local cache = StripCache[object]
@@ -435,7 +425,9 @@ Private.SetUpMap = function(self)
 
 	SetCVar("miniWorldMap", 0) 
 
-	Kill(WorldMapFrameButton)
+	WorldMapFrameButton:UnregisterAllEvents()
+	WorldMapFrameButton:SetParent(Private.UIHider)
+
 	if (WorldMapFrame:IsMaximized()) then
 		WorldMapFrame.MapShrinkerBackdrop:Show()
 		WorldMapFrame.MapShrinkerBorder:Show()
