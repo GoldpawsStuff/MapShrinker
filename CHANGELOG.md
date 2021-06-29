@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.5-Release] 2021-06-29
+- Bump toc for 9.1.0.
+
 ## [1.0.4-Release] 2021-04-21
 - Simplify some code.
 
