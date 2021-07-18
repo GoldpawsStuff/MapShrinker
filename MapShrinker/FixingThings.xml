@@ -1,6 +1,6 @@
 <Ui><Script><![CDATA[--[[
 
-FixingThings [2021-06-28]
+FixingThings [2021-07-05]
 https://www.patreon.com/goldpawsstuff
 
 All rights reserved.
@@ -10,7 +10,7 @@ Permission is hereby granted to distribute unmodified copies of this file.
 
 if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 
-	local Version = 3
+	local Version = 5
 	if (tonumber(QOSBBI_SPAWN_PATCH_VERSION) or 0) < Version then
 		QOSBBI_SPAWN_PATCH_VERSION = Version
 		
@@ -23,7 +23,9 @@ if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 			if (QOSBBI_SPAWN_PATCH_VERSION ~= Version) then
 				return
 			end
-			if (InCombatLockdown()) then
+			-- Only postpone spawns, not edits of existing buttons?
+			local block, questLogIndex, isQuestComplete = ...
+			if (InCombatLockdown()) and (not block.itemButton) then
 				frame:RegisterEvent("PLAYER_REGEN_ENABLED")
 				frame:SetScript("OnEvent", function() 
 					frame:UnregisterAllEvents() 
