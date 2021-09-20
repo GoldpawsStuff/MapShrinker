@@ -1,12 +1,27 @@
 <Ui><Script><![CDATA[--[[
 
-FixingThings [2021-07-05]
+FixingThings [2021-08-01]
 https://www.patreon.com/goldpawsstuff
 
 All rights reserved.
 
 Permission is hereby granted to distribute unmodified copies of this file.
 ]]
+
+-- https://wowpedia.fandom.com/wiki/API_GetThreatStatusColor
+if (not GetThreatStatusColor) then
+	GetThreatStatusColor = function(status)
+		if (not status) or (status == 0) then
+			return 0.69, 0.69, 0.69
+		elseif (status == 1) then
+			return 1.00, 1.00, 0.47
+		elseif (status == 2) then
+			return 1.00, 0.60, 0.00
+		elseif (status == 3) then
+			return 1.00, 0.00, 0.00
+		end
+	end
+end
 
 if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) then
 
