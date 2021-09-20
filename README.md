@@ -1,4 +1,4 @@
-# WorldMap Shrinker
+# Clean World Map
 This is a small addon that centers, shrinks, adds coordinates and nicely style the fullscreen retail WorldMap.
 
 ## **Support & Connect**
