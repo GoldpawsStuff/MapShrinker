@@ -1,8 +1,11 @@
-# MapShrinker Change Log
+# Clean World Map Change Log
 All notable changes to this project will be documented in this file. Be aware that the [Unreleased] features are not yet available in the official tagged builds.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) 
 and this project adheres to [Semantic Versioning](http://semver.org/).
+
+## [1.0.8-Release] 2021-09-26
+- Back-end updates and addon list name change.
 
 ## [1.0.7-Release] 2021-07-18
 ### Changed
