@@ -1,11 +1,14 @@
 # Clean World Map Change Log
 All notable changes to this project will be documented in this file. Be aware that the [Unreleased] features are not yet available in the official tagged builds.
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/) 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.13-Release] 2022-05-31
+- Bump toc to WoW client patch 9.2.5.
+
 ## [1.0.12-Release] 2022-04-06
-### Removed 
+### Removed
 - Removed the now deprecated FixingThings.
 
 ## [1.0.11-Release] 2022-02-23
