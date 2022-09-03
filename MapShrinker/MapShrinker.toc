@@ -14,7 +14,4 @@
 ## DefaultState: Enabled
 ## SavedVariables: MapShrinker_DB
 
-# General taint fixes
-TaintLess.xml
-
 Main.lua
