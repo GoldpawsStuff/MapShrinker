@@ -28,24 +28,24 @@ local Addon, Private = ...
 
 -- Localization system.
 -----------------------------------------------------------
--- Do not modify the function, 
+-- Do not modify the function,
 -- just the locales in the table below!
-local L = (function(tbl,defaultLocale) 
+local L = (function(tbl,defaultLocale)
 	local gameLocale = GetLocale() -- The locale currently used by the game client.
 	local L = tbl[gameLocale] or tbl[defaultLocale] -- Get the localization for the current locale, or use your default.
 	-- Replace the boolean 'true' with the key,
 	-- to simplify locale creation and reduce space needed.
-	for i in pairs(L) do 
-		if (L[i] == true) then 
+	for i in pairs(L) do
+		if (L[i] == true) then
 			L[i] = i
 		end
-	end 
-	-- If the game client is in another locale than your default, 
-	-- fill in any missing localization in the client's locale 
+	end
+	-- If the game client is in another locale than your default,
+	-- fill in any missing localization in the client's locale
 	-- with entries from your default locale.
-	if (gameLocale ~= defaultLocale) then 
-		for i,msg in pairs(tbl[defaultLocale]) do 
-			if (not L[i]) then 
+	if (gameLocale ~= defaultLocale) then
+		for i,msg in pairs(tbl[defaultLocale]) do
+			if (not L[i]) then
 				-- Replace the boolean 'true' with the key,
 				-- to simplify locale creation and reduce space needed.
 				L[i] = (msg == true) and i or msg
@@ -53,7 +53,7 @@ local L = (function(tbl,defaultLocale)
 		end
 	end
 	return L
-end)({ 
+end)({
 	-- ENTER YOUR LOCALIZATION HERE!
 	-----------------------------------------------------------
 	-- * Note that you MUST include a full table for your primary/default locale!
@@ -76,11 +76,11 @@ end)({
 	["ruRU"] = {},
 	["zhCN"] = {},
 	["zhTW"] = {}
-	
+
 -- The primary/default locale of your addon.
 -- * You should change this code to your default locale.
 -- * Note that you MUST include a full table for your primary/default locale!
-}, "enUS") 
+}, "enUS")
 
 -- Lua API
 -----------------------------------------------------------
@@ -141,9 +141,9 @@ end
 local GetFormattedCoordinates = function(x, y)
 	return 	string_gsub(string_format("|cfff0f0f0%.2f|r", x*100), "%.(.+)", "|cffa0a0a0.%1|r"),
 			string_gsub(string_format("|cfff0f0f0%.2f|r", y*100), "%.(.+)", "|cffa0a0a0.%1|r")
-end 
+end
 
-local CalculateScale = function() 
+local CalculateScale = function()
 	local min, max = 0.65, 0.95 -- our own scale limits
 	local uiMin, uiMax = 0.65, 1.15 -- blizzard uiScale slider limits
 	local uiScale = UIParent:GetEffectiveScale() -- current blizzard uiScale
@@ -164,30 +164,30 @@ end
 -----------------------------------------------------------
 local Coords_OnUpdate = function(self, elapsed)
 	self.elapsed = self.elapsed + elapsed
-	if (self.elapsed < .02) then 
-		return 
-	end 
+	if (self.elapsed < .02) then
+		return
+	end
 	local pX, pY, cX, cY
 	local mapID = GetBestMapForUnit("player")
-	if (mapID) then 
+	if (mapID) then
 		local mapPosObject = GetPlayerMapPosition(mapID, "player")
-		if (mapPosObject) then 
+		if (mapPosObject) then
 			pX, pY = mapPosObject:GetXY()
-		end 
-	end 
-	if (WorldMapFrame.ScrollContainer:IsMouseOver()) then 
+		end
+	end
+	if (WorldMapFrame.ScrollContainer:IsMouseOver()) then
 		cX, cY = WorldMapFrame.ScrollContainer:GetNormalizedCursorPosition()
 	end
-	if ((pX) and (pY) and (pX > 0) and (pY > 0)) then 
+	if ((pX) and (pY) and (pX > 0) and (pY > 0)) then
 		self.Player:SetFormattedText("%s:|r   %s, %s", L["Player"], GetFormattedCoordinates(pX, pY))
-	else 
+	else
 		self.Player:SetText(" ")
-	end 
-	if ((cX) and (cY) and (cX > 0) and (cY > 0) and (cX < 100) and (cY < 100)) then 
+	end
+	if ((cX) and (cY) and (cX > 0) and (cY > 0) and (cX < 100) and (cY < 100)) then
 		self.Cursor:SetFormattedText("%s:|r   %s, %s", L["Mouse"], GetFormattedCoordinates(cX, cY))
 	else
 		self.Cursor:SetText(" ")
-	end 
+	end
 	self.elapsed = 0
 end
 
@@ -253,7 +253,7 @@ local WorldMapFrame_Maximize = function(self)
 	WorldMapFrame.NavBar:Hide()
 	WorldMapFrame.BorderFrame:SetAlpha(0)
 	WorldMapFrameBg:Hide()
-	
+
 	WorldMapFrameCloseButton:ClearAllPoints()
 	WorldMapFrameCloseButton:SetPoint("TOPLEFT", 4, -70)
 
@@ -273,7 +273,7 @@ local WorldMapFrame_Minimize = function(self)
 		WorldMapFrame.NavBar:Show()
 		WorldMapFrame.BorderFrame:SetAlpha(1)
 		WorldMapFrameBg:Show()
-		
+
 		WorldMapFrameCloseButton:ClearAllPoints()
 		WorldMapFrameCloseButton:SetPoint("TOPRIGHT", 5, 5)
 
@@ -299,13 +299,19 @@ local WorldMapFrame_UpdateSize = function(self)
 	local scale = CalculateScale()
 	local magicNumber = (1 - scale) * 100
 	WorldMapFrame:SetSize((width * scale) - (magicNumber + 2), (height * scale) - 2)
-	WorldMapFrame:OnCanvasSizeChanged()
+	-- This fails early on in Dragonflight.
+	-- I haven't pinned down where it goes wrong,
+	-- but for now it appears to be working after
+	-- PLAYER_ENTERING_WORLD.
+	if (Private.inWorld) then
+		WorldMapFrame:OnCanvasSizeChanged()
+	end
 end
 
 
 -- Addon API
 -----------------------------------------------------------
--- Custom check to see if we can run this addon at all. 
+-- Custom check to see if we can run this addon at all.
 Private.IsIncompatible = function(self)
 	if (not self.IsRetail) then
 		return true
@@ -357,7 +363,7 @@ Private.CreateCoordinates = function(self)
 end
 
 Private.StyleWorldMap = function(self)
-	QuestMapFrame:SetScript("OnHide", nil) 
+	QuestMapFrame:SetScript("OnHide", nil)
 	QuestMapFrame.VerticalSeparator:Hide()
 
 	WorldMapFrame.BlackoutFrame.Blackout:SetTexture(nil)
@@ -393,10 +399,10 @@ Private.HookWorldMap = function(self)
 	hooksecurefunc(WorldMapFrame, "SynchronizeDisplayState", WorldMapFrame_SyncState)
 	hooksecurefunc(WorldMapFrame, "UpdateMaximizedSize", WorldMapFrame_UpdateSize)
 
-	-- Do NOT use HookScript on the WorldMapFrame, 
+	-- Do NOT use HookScript on the WorldMapFrame,
 	-- as it WILL taint it after the 3rd opening in combat.
 	-- Super weird, but super important. Do it this way instead.
-	-- *Note that this even though seemingly identical, 
+	-- *Note that this even though seemingly identical,
 	--  is in fact NOT the same taint as that occurring when
 	--  a new quest item button is spawned in the tracker in combat.
 	local WorldMapFrame_OnShow
@@ -423,7 +429,7 @@ Private.SetUpMap = function(self)
 	self:HookWorldMap()
 	self:CreateCoordinates()
 
-	SetCVar("miniWorldMap", 0) 
+	SetCVar("miniWorldMap", 0)
 
 	WorldMapFrameButton:UnregisterAllEvents()
 	WorldMapFrameButton:SetParent(Private.UIHider)
@@ -458,6 +464,8 @@ Private.OnEvent = function(self, event, ...)
 			WorldMapFrame_UnstripOverlays()
 		end
 		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+	elseif (event == "PLAYER_ENTERING_WORLD") then
+		self.inWorld = true
 	end
 end
 
@@ -489,6 +497,7 @@ Private.OnEnable = function(self)
 	else
 		self:RegisterEvent("ADDON_LOADED")
 	end
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 end
 
 
@@ -521,19 +530,19 @@ end
 	end
 
 	-- Simple API calls to retrieve a media file.
-	-- Will honor the relativ subpath set above, if defined, 
+	-- Will honor the relativ subpath set above, if defined,
 	-- and will default to the addon folder itself if not.
-	-- Note that we cannot check for file or folder existence 
+	-- Note that we cannot check for file or folder existence
 	-- from within the WoW API, so you must make sure this is correct.
-	Private.GetMedia = function(self, name, type) 
+	Private.GetMedia = function(self, name, type)
 		if (Path) then
-			return ([[Interface\AddOns\%s\%s\%s.%s]]):format(Addon, Path, name, type or "tga") 
+			return ([[Interface\AddOns\%s\%s\%s.%s]]):format(Addon, Path, name, type or "tga")
 		else
-			return ([[Interface\AddOns\%s\%s.%s]]):format(Addon, name, type or "tga") 
+			return ([[Interface\AddOns\%s\%s.%s]]):format(Addon, name, type or "tga")
 		end
 	end
 
-	-- Parse chat input arguments 
+	-- Parse chat input arguments
 	local parse = function(msg)
 		msg = string.gsub(msg, "^%s+", "") -- Remove spaces at the start.
 		msg = string.gsub(msg, "%s+$", "") -- Remove spaces at the end.
@@ -543,7 +552,7 @@ end
 		else
 			return msg
 		end
-	end 
+	end
 
 	-- This methods lets you register a chat command, and a callback function or private method name.
 	-- Your callback will be called as callback(Private, editBox, commandName, ...) where (...) are all the input parameters.
@@ -557,12 +566,12 @@ end
 			if (func) then
 				func(Private, editBox, command, parse(string.lower(msg)))
 			end
-		end 
+		end
 	end
 
 	Private.GetAddOnInfo = function(self, index)
 		local name, title, notes, loadable, reason, security, newVersion = GetAddOnInfo(index)
-		local enabled = not(GetAddOnEnableState(UnitName("player"), index) == 0) 
+		local enabled = not(GetAddOnEnableState(UnitName("player"), index) == 0)
 		return name, title, notes, enabled, loadable, reason, security
 	end
 
@@ -579,9 +588,9 @@ end
 		end
 	end
 
-	-- This method lets you check if an addon WILL be loaded regardless of whether or not it currently is. 
-	-- This is useful if you want to check if an addon interacting with yours is enabled. 
-	-- My philosophy is that it's best to avoid addon dependencies in the toc file, 
+	-- This method lets you check if an addon WILL be loaded regardless of whether or not it currently is.
+	-- This is useful if you want to check if an addon interacting with yours is enabled.
+	-- My philosophy is that it's best to avoid addon dependencies in the toc file,
 	-- unless your addon is a plugin to another addon, that is.
 	Private.IsAddOnEnabled = function(self, target)
 		local target = string.lower(target)
@@ -608,61 +617,61 @@ end
 
 	-- Event Dispatcher and Initialization Handler
 	-----------------------------------------------------------
-	-- Assign our event script handler, 
+	-- Assign our event script handler,
 	-- which runs our initialization methods,
 	-- and dispatches event to the addon namespace.
 	self:RegisterEvent("ADDON_LOADED")
-	self:SetScript("OnEvent", function(self, event, ...) 
+	self:SetScript("OnEvent", function(self, event, ...)
 		if (event == "ADDON_LOADED") then
 			-- Nothing happens before this has fired for your addon.
-			-- When it fires, we remove the event listener 
+			-- When it fires, we remove the event listener
 			-- and call our initialization method.
 			if ((...) == Addon) then
 				-- Delete our initial registration of this event.
-				-- Note that you are free to re-register it in any of the 
-				-- addon namespace methods. 
+				-- Note that you are free to re-register it in any of the
+				-- addon namespace methods.
 				self:UnregisterEvent("ADDON_LOADED")
 				-- Call the initialization method.
 				if (Private.OnInit) then
 					Private:OnInit()
 				end
-				-- If this was a load-on-demand addon, 
+				-- If this was a load-on-demand addon,
 				-- then we might be logged in already.
-				-- If that is the case, directly run 
+				-- If that is the case, directly run
 				-- the enabling method.
 				if (IsLoggedIn()) then
 					if (Private.OnEnable) then
 						Private:OnEnable()
 					end
 				else
-					-- If this is a regular always-load addon, 
+					-- If this is a regular always-load addon,
 					-- we're not yet logged in, and must listen for this.
 					self:RegisterEvent("PLAYER_LOGIN")
 				end
-				-- Return. We do not wish to forward the loading event 
+				-- Return. We do not wish to forward the loading event
 				-- for our own addon to the namespace event handler.
 				-- That is what the initialization method exists for.
 				return
 			end
 		elseif (event == "PLAYER_LOGIN") then
-			-- This event only ever fires once on a reload, 
-			-- and anything you wish done at this event, 
+			-- This event only ever fires once on a reload,
+			-- and anything you wish done at this event,
 			-- should be put in the namespace enable method.
 			self:UnregisterEvent("PLAYER_LOGIN")
 			-- Call the enabling method.
 			if (Private.OnEnable) then
 				Private:OnEnable()
 			end
-			-- Return. We do not wish to forward this 
+			-- Return. We do not wish to forward this
 			-- to the namespace event handler.
-			return 
+			return
 		end
 		-- Forward other events than our two initialization events
-		-- to the addon namespace's event handler. 
+		-- to the addon namespace's event handler.
 		-- Note that you can always register more ADDON_LOADED
-		-- if you wish to listen for other addons loading.  
+		-- if you wish to listen for other addons loading.
 		if (Private.OnEvent) then
-			Private:OnEvent(event, ...) 
+			Private:OnEvent(event, ...)
 		end
 	end)
 end)((function() return CreateFrame("Frame", nil, WorldFrame) end)())

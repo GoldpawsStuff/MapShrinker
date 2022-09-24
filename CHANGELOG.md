@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.16-Release] 2022-09-24
+### Added
+- Added an updated version of TaintLess.xml.
+
+### Fixed
+- Workaround for an issue on logon and reloads in Dragonflight.
+
 ## [1.0.15-Release] 2022-09-03
 ### Removed
 - Removing TaintLess.xml as its about to be deprecated.
