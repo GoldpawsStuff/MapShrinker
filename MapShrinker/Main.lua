@@ -299,11 +299,10 @@ local WorldMapFrame_UpdateSize = function(self)
 	local scale = CalculateScale()
 	local magicNumber = (1 - scale) * 100
 	WorldMapFrame:SetSize((width * scale) - (magicNumber + 2), (height * scale) - 2)
-	-- This fails early on in Dragonflight.
-	-- I haven't pinned down where it goes wrong,
-	-- but for now it appears to be working after
-	-- PLAYER_ENTERING_WORLD.
-	if (Private.inWorld) then
+
+	-- This fails in Dragonflight at startup,
+	-- uncertain what events or methods to safely call it after.
+	if (Private.ClientMajor < 10) then
 		WorldMapFrame:OnCanvasSizeChanged()
 	end
 end
@@ -516,12 +515,12 @@ end
 	-- These are defined in FrameXML/BNet.lua
 	-- *Using blizzard constants if they exist,
 	-- using string parsing as a fallback.
-	Private.IsClassic = (WOW_PROJECT_ID) and (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) or (tonumber(MAJOR) == 1)
-	Private.IsRetail = (WOW_PROJECT_ID) and (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE) or (tonumber(MAJOR) >= 9)
-	Private.IsClassicTBC = tonumber(MAJOR) == 2
-	Private.IsRetailBFA = tonumber(MAJOR) == 8
-	Private.IsRetailShadowlands = tonumber(MAJOR) == 9
-	Private.CurrentClientBuild = currentClientBuild -- Expose the build number too
+	Private.IsRetail = (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE)
+
+	-- Store major, minor and build.
+	Private.ClientMajor = tonumber(MAJOR)
+	Private.ClientMinor = tonumber(MINOR)
+	Private.ClientBuild = currentClientBuild
 
 	-- Set a relative subpath to look for media files in.
 	local Path
