@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased] 2022-10-10
+### Fixed
+- Changed the Dragonflight workaround to not affect Shadowlands.
+
 ## [1.0.16-Release] 2022-09-24
 ### Added
 - Added an updated version of TaintLess.xml.
