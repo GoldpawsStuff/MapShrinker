@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.19-Release] 2022-11-05
+### Fixed
+- Fixed an issue that would bug out the addon at startup in WoW 10.0.2.
+
 ## [1.0.18-Release] 2022-10-25
 - Bumped retail version to the 10.0.0 patch.
 

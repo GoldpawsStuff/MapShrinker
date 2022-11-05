@@ -203,8 +203,8 @@ local WorldMapFrame_StripOverlays = function()
 					Private:RegisterEvent("PLAYER_REGEN_ENABLED")
 				else
 					Strip(object)
-					object.Text:Hide()
-					object.Button:Hide()
+					if (object.Text) then object.Text:Hide() end -- gone in 10.0.2
+					if (object.Button) then object.Button:Hide() end -- gone in 10.0.2
 				end
 			end
 		end
