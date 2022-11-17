@@ -223,8 +223,8 @@ local WorldMapFrame_UnstripOverlays = function()
 					Private:RegisterEvent("PLAYER_REGEN_ENABLED")
 				else
 					Unstrip(object)
-					object.Text:Show()
-					object.Button:Show()
+					if (object.Text) then object.Text:Show() end -- gone in 10.0.2
+					if (object.Button) then object.Button:Show() end -- gone in 10.0.2
 				end
 			end
 		end
