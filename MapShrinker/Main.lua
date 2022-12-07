@@ -191,47 +191,7 @@ local Coords_OnUpdate = function(self, elapsed)
 	self.elapsed = 0
 end
 
-local WorldMapFrame_StripOverlays = function()
-	for _,object in pairs(WorldMapFrame.overlayFrames) do
-		if (type(object) == "table") and (object.Icon) then
-			local texture = object.Icon:GetTexture()
-			if (texture) then
-				object.Border:SetAlpha(0)
-				object.Background:SetAlpha(0)
-			else
-				if (InCombatLockdown()) then
-					Private:RegisterEvent("PLAYER_REGEN_ENABLED")
-				else
-					Strip(object)
-					if (object.Text) then object.Text:Hide() end -- gone in 10.0.2
-					if (object.Button) then object.Button:Hide() end -- gone in 10.0.2
-				end
-			end
-		end
-	end
-end
-
-local WorldMapFrame_UnstripOverlays = function()
-	for _,object in pairs(WorldMapFrame.overlayFrames) do
-		if (type(object) == "table") and (object.Icon) then
-			local texture = object.Icon:GetTexture()
-			if (texture) then
-				object.Border:SetAlpha(1)
-				object.Background:SetAlpha(1)
-			else
-				if (InCombatLockdown()) then
-					Private:RegisterEvent("PLAYER_REGEN_ENABLED")
-				else
-					Unstrip(object)
-					if (object.Text) then object.Text:Show() end -- gone in 10.0.2
-					if (object.Button) then object.Button:Show() end -- gone in 10.0.2
-				end
-			end
-		end
-	end
-end
-
-local WorldMapFrame_Maximize = function(self)
+local WorldMapFrame_Maximize = function()
 	local WorldMapFrame = WorldMapFrame
 	WorldMapFrame:SetParent(UIParent)
 	WorldMapFrame:SetScale(1)
@@ -246,10 +206,6 @@ local WorldMapFrame_Maximize = function(self)
 
 	WorldMapFrame:OnFrameSizeChanged()
 
-	if (WorldMapFrame:GetMapID()) then
-		WorldMapFrame.NavBar:Refresh()
-	end
-
 	WorldMapFrame.NavBar:Hide()
 	WorldMapFrame.BorderFrame:SetAlpha(0)
 	WorldMapFrameBg:Hide()
@@ -257,14 +213,12 @@ local WorldMapFrame_Maximize = function(self)
 	WorldMapFrameCloseButton:ClearAllPoints()
 	WorldMapFrameCloseButton:SetPoint("TOPLEFT", 4, -70)
 
-	WorldMapFrame_StripOverlays()
-
 	WorldMapFrame.MapShrinkerBackdrop:Show()
 	WorldMapFrame.MapShrinkerBorder:Show()
 	WorldMapFrame.MapShrinkerCoords:Show()
 end
 
-local WorldMapFrame_Minimize = function(self)
+local WorldMapFrame_Minimize = function()
 	local WorldMapFrame = WorldMapFrame
 	if (not WorldMapFrame:IsMaximized()) then
 		WorldMapFrame:ClearAllPoints()
@@ -277,7 +231,7 @@ local WorldMapFrame_Minimize = function(self)
 		WorldMapFrameCloseButton:ClearAllPoints()
 		WorldMapFrameCloseButton:SetPoint("TOPRIGHT", 5, 5)
 
-		WorldMapFrame_UnstripOverlays()
+		--WorldMapFrame_UnstripOverlays()
 
 		WorldMapFrame.MapShrinkerBackdrop:Hide()
 		WorldMapFrame.MapShrinkerBorder:Hide()
@@ -285,7 +239,7 @@ local WorldMapFrame_Minimize = function(self)
 	end
 end
 
-local WorldMapFrame_SyncState = function(self)
+local WorldMapFrame_SyncState = function()
 	local WorldMapFrame = WorldMapFrame
 	if (WorldMapFrame:IsMaximized()) then
 		WorldMapFrame:ClearAllPoints()
@@ -293,7 +247,7 @@ local WorldMapFrame_SyncState = function(self)
 	end
 end
 
-local WorldMapFrame_UpdateSize = function(self)
+local WorldMapFrame_UpdateMaximizedSize = function()
 	local WorldMapFrame = WorldMapFrame
 	local width, height = WorldMapFrame:GetSize()
 	local scale = CalculateScale()
@@ -362,12 +316,6 @@ Private.CreateCoordinates = function(self)
 end
 
 Private.StyleWorldMap = function(self)
-	QuestMapFrame:SetScript("OnHide", nil)
-	QuestMapFrame.VerticalSeparator:Hide()
-
-	WorldMapFrame.BlackoutFrame.Blackout:SetTexture(nil)
-	WorldMapFrame.BlackoutFrame:EnableMouse(false)
-	WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton:SetParent(Private.UIHider)
 
 	local backdrop = CreateFrame("Frame", nil, WorldMapFrame, BackdropTemplateMixin and "BackdropTemplate")
 	backdrop:Hide()
@@ -389,34 +337,37 @@ Private.StyleWorldMap = function(self)
 	WorldMapFrame.MapShrinkerBackdrop = backdrop
 	WorldMapFrame.MapShrinkerBorder = border
 
-	WorldMapFrame_StripOverlays()
-end
+	WorldMapFrame:EnableMouse(false)
 
-Private.HookWorldMap = function(self)
-	hooksecurefunc(WorldMapFrame, "Maximize", WorldMapFrame_Maximize)
-	hooksecurefunc(WorldMapFrame, "Minimize", WorldMapFrame_Minimize)
-	hooksecurefunc(WorldMapFrame, "SynchronizeDisplayState", WorldMapFrame_SyncState)
-	hooksecurefunc(WorldMapFrame, "UpdateMaximizedSize", WorldMapFrame_UpdateSize)
+	WorldMapFrame.BlackoutFrame.Blackout:SetTexture(nil)
+	WorldMapFrame.BlackoutFrame:EnableMouse(false)
+	WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton:SetParent(Private.UIHider)
 
-	-- Do NOT use HookScript on the WorldMapFrame,
-	-- as it WILL taint it after the 3rd opening in combat.
-	-- Super weird, but super important. Do it this way instead.
-	-- *Note that this even though seemingly identical,
-	--  is in fact NOT the same taint as that occurring when
-	--  a new quest item button is spawned in the tracker in combat.
-	local WorldMapFrame_OnShow
-	WorldMapFrame_OnShow = function(_, event, ...)
-		local WorldMapFrame = WorldMapFrame
-		if (WorldMapFrame:IsMaximized()) then
-			WorldMapFrame:UpdateMaximizedSize()
-			WorldMapFrame_Maximize()
-		else
-			WorldMapFrame_Minimize()
+	for index,button in pairs(WorldMapFrame.overlayFrames) do
+		if (type(button) == "table") then
+			if (button.Icon) then
+				local texture = button.Icon:GetTexture()
+				if (texture) then
+					button.Border:SetAlpha(0)
+					button.Background:SetAlpha(0)
+				else
+					for i = 1, button:GetNumRegions() do
+						local region = select(i, button:GetRegions())
+						if (region and region:GetObjectType() == "Texture") then
+							region:SetTexture(nil)
+						end
+					end
+					if (button.Button) then
+						button.Button:Hide()
+					end
+					if (button.Text) then
+						button.Text:Hide()
+					end
+				end
+			end
 		end
-		-- Noop it after the first run
-		WorldMapFrame_OnShow = function() end
 	end
-	hooksecurefunc(WorldMapFrame, "Show", WorldMapFrame_OnShow)
+
 end
 
 Private.SetUpMap = function(self)
@@ -425,19 +376,22 @@ Private.SetUpMap = function(self)
 	end
 
 	self:StyleWorldMap()
-	self:HookWorldMap()
 	self:CreateCoordinates()
 
 	SetCVar("miniWorldMap", 0)
 
+	hooksecurefunc(WorldMapFrame, "Maximize", WorldMapFrame_Maximize)
+	hooksecurefunc(WorldMapFrame, "Minimize", WorldMapFrame_Minimize)
+	hooksecurefunc(WorldMapFrame, "SynchronizeDisplayState", WorldMapFrame_SyncState)
+	hooksecurefunc(WorldMapFrame, "UpdateMaximizedSize", WorldMapFrame_UpdateMaximizedSize)
+
 	WorldMapFrameButton:UnregisterAllEvents()
 	WorldMapFrameButton:SetParent(Private.UIHider)
+	WorldMapFrameButton:Hide()
 
 	if (WorldMapFrame:IsMaximized()) then
-		WorldMapFrame.MapShrinkerBackdrop:Show()
-		WorldMapFrame.MapShrinkerBorder:Show()
-		WorldMapFrame:UpdateMaximizedSize()
-		WorldMapFrame_Maximize(WorldMapFrame)
+		WorldMapFrame_UpdateMaximizedSize()
+		WorldMapFrame_Maximize()
 	end
 
 	self.Styled = true
@@ -456,13 +410,6 @@ Private.OnEvent = function(self, event, ...)
 			self:SetUpMap()
 			self:UnregisterEvent("ADDON_LOADED")
 		end
-	elseif (event == "PLAYER_REGEN_ENABLED") then
-		if (WorldMapFrame:IsMaximized()) then
-			WorldMapFrame_StripOverlays()
-		else
-			WorldMapFrame_UnstripOverlays()
-		end
-		self:UnregisterEvent("PLAYER_REGEN_ENABLED")
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		self.inWorld = true
 	end

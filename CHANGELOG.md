@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.22-Release] 2022-12-07
+### Fixed
+- No more EditMode taint!
+
 ## [1.0.21-Release] 2022-11-17
 ### Fixed
 - Finished the fix from 1.0.19-Release which only fixed half the problem. Toggling between fullscreen and normal world map should no longer cause an error. In theory.
