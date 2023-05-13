@@ -1,6 +1,7 @@
-[![patreon](https://www.goldpawsstuff.com/shared/img/common/pa-button.png)](https://www.patreon.com/goldpawsstuff)
-[![paypal](https://www.goldpawsstuff.com/shared/img/common/pp-button.png)](https://www.paypal.me/goldpawsstuff)
-[![discord](https://www.goldpawsstuff.com/shared/img/common/dd-button.png)](https://discord.gg/RwcSm8V3Dy)
-[![twitter](https://www.goldpawsstuff.com/shared/img/common/tw-button.png)](https://twitter.com/GoldpawsStuff)
-
 This is a small addon that centers, shrinks, adds coordinates and nicely style the fullscreen retail WorldMap.
+
+## Connect & Support
+* Patreon: [patreon.com/goldpawsstuff](https://www.patreon.com/goldpawsstuff)
+* Paypal: [paypal.me/goldpawsstuff](https://www.paypal.me/goldpawsstuff)
+* Discord: [discord.gg/RwcSm8V3Dy](https://discord.gg/RwcSm8V3Dy)
+* Twitter: [@goldpawsstuff](https://twitter.com/goldpawsstuff)
