@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.27-Release] 2023-05-31
+- Updated addon listing icon textures for Retail.
+
 ## [1.0.26-Release] 2023-05-24
 - Updated for compatibility with WoW 3.4.2 PTR.
 
