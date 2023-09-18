@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.30-Release] 2023-09-18
+### Changed
+- Added TaintLess as an optional dependency to make sure the standalone is loaded first.
+- Update the embedded TaintLess.xml to version [23-09-09].
+
 ## [1.0.29-Release] 2023-09-06
 - Updated for Retail client patch 10.1.7.
 
