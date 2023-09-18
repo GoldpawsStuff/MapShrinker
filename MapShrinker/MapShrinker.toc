@@ -12,7 +12,9 @@
 ## X-License: Custom
 
 ## DefaultState: Enabled
-## SavedVariables: TaintLess, MapShrinker_DB
+## SavedVariables: MapShrinker_DB
+
+## OptionalDeps: TaintLess
 
 TaintLess.xml
 Main.lua
