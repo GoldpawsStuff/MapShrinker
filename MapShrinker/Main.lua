@@ -385,9 +385,12 @@ Private.SetUpMap = function(self)
 	hooksecurefunc(WorldMapFrame, "SynchronizeDisplayState", WorldMapFrame_SyncState)
 	hooksecurefunc(WorldMapFrame, "UpdateMaximizedSize", WorldMapFrame_UpdateMaximizedSize)
 
-	WorldMapFrameButton:UnregisterAllEvents()
-	WorldMapFrameButton:SetParent(Private.UIHider)
-	WorldMapFrameButton:Hide()
+	-- Button removed in WoW Retail 11.0.0.
+	if (WorldMapFrameButton) then
+		WorldMapFrameButton:UnregisterAllEvents()
+		WorldMapFrameButton:SetParent(Private.UIHider)
+		WorldMapFrameButton:Hide()
+	end
 
 	if (WorldMapFrame:IsMaximized()) then
 		WorldMapFrame_UpdateMaximizedSize()

@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file. Be aware th
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.36-Release] 2024-07-24
+- Updated for WoW Retail Client Patch 11.0.0.
+
 ## [1.0.35-Release] 2024-07-10
 - Updated for WoW Retail Client Patch 10.2.7.
 
