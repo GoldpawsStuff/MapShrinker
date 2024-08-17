@@ -99,9 +99,8 @@ local GetMapInfo = C_Map and C_Map.GetMapInfo
 local GetPlayerMapPosition = C_Map and C_Map.GetPlayerMapPosition
 local hooksecurefunc = hooksecurefunc
 local InCombatLockdown = InCombatLockdown
-local IsAddOnLoaded = IsAddOnLoaded
+local IsAddOnLoaded = IsAddOnLoaded or C_AddOns.IsAddOnLoaded
 local UIParent = UIParent
-
 
 -- Utility Functions
 -----------------------------------------------------------
@@ -461,6 +460,11 @@ end
 
 	-- Let's create some constants for faster lookups
 	local MAJOR,MINOR,PATCH = string.split(".", currentClientPatch)
+
+	-- WoW 11.0.x
+	local GetAddOnEnableState = GetAddOnEnableState or function(character, name) return C_AddOns.GetAddOnEnableState(name, character) end
+	local GetAddOnInfo = GetAddOnInfo or C_AddOns.GetAddOnInfo
+	local GetNumAddOns = GetNumAddOns or C_AddOns.GetNumAddOns
 
 	-- These are defined in FrameXML/BNet.lua
 	-- *Using blizzard constants if they exist,
